@@ -15,85 +15,75 @@ extension Int {
 
 struct ContentView: View {
   
-  private enum Metric {
-    static let largetBlockWidth = 214.f
-    static let largetBlockHeight = 257.f
-    static let smallBlockWidth = 105.f
-    static let smallBlockHeight = 105.f
-  }
+
+  
+  let data: [CellData] = [
+    CellData(size: .small),
+    CellData(size: .medium),
+    CellData(size: .large),
+    CellData(size: .medium),
+    CellData(size: .small),
+  ]
   
   var body: some View {
-    VStack(spacing: 7) {
-      HStack(spacing: 7) {
-        KBBlockView {
-          Text("5342P")
-        } subtitle: {
-          Text("카카오페이포인트")
-        } bottomContent: {
-          Image.init(systemName: "plus")
-            .frame(width: 30, height: 30)
-            .background(
-              Circle()
-                .foregroundColor(.white)
-                .opacity(0.5)
-            )
-        }
-        .frame(width:214, height: 257)
-        .kbBlockViewStyle(YellowBlockViewStyle())
-        
-        VStack(spacing: 7) {
-          KBBlockView {
-            Text("선택하기")
-          } subtitle: {
-            Text("송금")
-          } bottomContent: {
-            Image.init(systemName: "plus")
-              .frame(width: 15, height: 15)
-              .background(
-                Circle()
-                  .foregroundColor(.white)
-                  .opacity(0.5)
-              )
+    GeometryReader { geometry in
+      VStack {
+        ForEach(0 ..< 5) { row in
+          HStack {
+            ForEach(0 ..< 5) { column in
+              CellView(data: self.data[column],
+                       size: geometry.size)
+            }
           }
-          .frame(width:105, height: 125)
-          .kbBlockViewStyle(BlackBlockViewStyle())
-          
-          KBBlockView {
-            Text("선택하기")
-          } subtitle: {
-            Text("결제")
-          } bottomContent: {
-            Image.init(systemName: "plus")
-              .frame(width: 15, height: 15)
-              .background(
-                Circle()
-                  .foregroundColor(.white)
-                  .opacity(0.5)
-              )
-          }
-          .frame(width:105, height: 125)
-          .kbBlockViewStyle(BlackBlockViewStyle())
         }
       }
-      KBBlockView {
-        Text("주식회사 카카오")
-      } subtitle: {
-        Text("4890원")
-      } bottomContent: {
-        VStack(alignment: .trailing) {
-          Text("결제")
-          Text("01.21(토) 09:14")
-        }
-      }
-      .frame(width:326, height: 124)
+      .padding()
     }
   }
+  
+  
 }
 
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     ZStack {
-      ContentView()      
+      ContentView()
     }
   }
+}
+
+struct CellData {
+  let size: CellSize
+}
+
+struct CellView: View {
+  let data: CellData
+  let size: CGSize
+  
+  var body: some View {
+    let cellWidth: CGFloat
+    let cellHeight: CGFloat
+    
+    switch data.size {
+    case .small:
+      cellWidth = (size.width - 30) / 5
+      cellHeight = (size.height - 30) / 5
+    case .medium:
+      cellWidth = (size.width - 20) / 4
+      cellHeight = (size.height - 20) / 4
+    case .large:
+      cellWidth = (size.width - 10) / 3
+      cellHeight = (size.height - 10) / 3
+    }
+    
+    return Text("Cell")
+      .frame(width: cellWidth, height: cellHeight)
+      .background(Color.gray)
+  }
+}
+
+enum CellSize {
+  case small
+  case medium
+  case large
 }
